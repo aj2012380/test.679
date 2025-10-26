@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jarvis Voice Assistant</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #0a0f24 0%, #020617 100%);
+      color: #00ffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      text-shadow: 0 0 15px #00ffff;
+      margin-bottom: 30px;
+    }
+
+    .circle {
+      width: 150px;
+      height: 150px;
+      border: 4px solid #00ffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px #00ffff, inset 0 0 25px #00ffff;
+      animation: pulse 2s infinite;
+    }
+
+    .pulse-inner {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 20px #00ffff;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    button {
+      margin-top: 40px;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 10px;
+      background: #00ffff;
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffff;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00ffff;
+    }
+
+    .output {
+      margin-top: 20px;
+      font-size: 1.1em;
+      color: #cbd5e1;
+      width: 80%;
+      min-height: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>JARVIS Voice Assistant</h1>
+  <div class="circle">
+    <div class="pulse-inner"></div>
+  </div>
+  <button id="start-btn">🎤 Activate Jarvis</button>
+  <div class="output" id="output">Say something like “Open YouTube” or “Search for cats”</div>
+
+  <script>
+    const output = document.getElementById("output");
+    const startBtn = document.getElementById("start-btn");
+
+    // Speech Recognition setup
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    // Speak function
+    function speak(text) {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en-US";
+      utter.pitch = 1.1;
+      utter.rate = 1;
+      window.speechSynthesis.speak(utter);
+    }
+
+    // Dynamic greeting
+    function getGreeting() {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) return "Good morning";
+      else if (hour >= 12 && hour < 18) return "Good afternoon";
+      else return "Good evening";
+    }
+
+    // Command handler
+    function processCommand(command) {
+      command = command.toLowerCase();
+      output.textContent = "You said: " + command;
+
+      // Greetings
+      if (command.includes("hello") || command.includes("hi jarvis")) {
+        const greet = getGreeting();
+        speak(`${greet}, sir. How can I help you today?`);
+      }
+
+      // Time & Date
+      else if (command.includes("time")) {
+        const time = new Date().toLocaleTimeString();
+        speak("The time is " + time);
+      } else if (command.includes("date")) {
+        const date = new Date().toLocaleDateString();
+        speak("Today's date is " + date);
+      }
+
+      // Open popular sites
+      else if (command.includes("open youtube")) {
+        speak("Opening YouTube");
+        window.open("https://www.youtube.com", "_blank");
+      } else if (command.includes("open google")) {
+        speak("Opening Google");
+        window.open("https://www.google.com", "_blank");
+      } else if (command.includes("open instagram")) {
+        speak("Opening Instagram");
+        window.open("https://www.instagram.com", "_blank");
+      } else if (command.includes("open facebook")) {
+        speak("Opening Facebook");
+        window.open("https://www.facebook.com", "_blank");
+      } else if (command.includes("open x") || command.includes("open twitter")) {
+        speak("Opening X, previously known as Twitter");
+        window.open("https://www.x.com", "_blank");
+      }
+
+      // Search Command
+      else if (command.includes("search for") || command.includes("google")) {
+        let query = command.replace("search for", "").replace("google", "").trim();
+        if (query === "") {
+          speak("Please tell me what you want to search for.");
+        } else {
+          speak("Searching Google for " + query);
+          window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, "_blank");
+        }
+      }
+
+      // Fallback → Search anything else on Google
+      else {
+        speak("Searching Google for " + command);
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(command)}`, "_blank");
+      }
+    }
+
+    // On start click
+    startBtn.addEventListener("click", () => {
+      const greeting = getGreeting();
+      speak(`${greeting}, sir. Jarvis online and ready to assist.`);
+      recognition.start();
+    });
+
+    // On voice input
+    recognition.onresult = (event) => {
+      const command = event.results[0][0].transcript;
+      processCommand(command);
+    };
+
+    // Error handler
+    recognition.onerror = (e) => {
+      output.textContent = "Error: " + e.error;
+      speak("Sorry, I didn't catch that. Please try again.");
+    };
+  </script>
+</body>
+</html>
