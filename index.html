@@ -148,14 +148,23 @@
       } else if (command.includes("open instagram")) {
         speak("Opening Instagram");
         window.open("https://www.instagram.com", "_blank");
+      } else if (command.includes("opne jio")) {
+        speak("Opening jiohtostar");
+        window.open("https://www.hotstar.com/", "_blank");
       } else if (command.includes("open facebook")) {
         speak("Opening Facebook");
         window.open("https://www.facebook.com", "_blank");
+      } else if (command.includes("open github")) {
+        speak("Opening github");
+        window.open("https://github.com/", "_blank"); 
       } else if (command.includes("open x") || command.includes("open twitter")) {
         speak("Opening X, previously known as Twitter");
         window.open("https://www.x.com", "_blank");
+      } else if (command.includes("open vercel") || command.includes("open twitter")) {
+        speak("Opening vercel");
+        window.open("https://vercel.com/", "_blank");
       }
-
+        
       // Search Command
       else if (command.includes("search for") || command.includes("google")) {
         let query = command.replace("search for", "").replace("google", "").trim();
@@ -195,4 +204,5 @@
   </script>
 </body>
 </html>
+
 
