@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0f24">
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jarvis Voice Assistant</title>
@@ -201,9 +204,31 @@
       output.textContent = "Error: " + e.error;
       speak("Sorry, I didn't catch that. Please try again.");
     };
+    {
+  "name": "JARVIS Voice Assistant",
+  "short_name": "JARVIS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0f24",
+  "theme_color": "#00ffff",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
   </script>
 </body>
 </html>
+
 
 
 
